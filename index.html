@@ -3,7 +3,243 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NGワードゲーム</title><!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NGワードゲーム</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f9f9fb;
+            text-align: center;
+            flex-direction: column;
+        }
+        .game-container {
+            background-color: #fff;
+            padding: 30px 50px;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 750px;
+            text-align: center;
+        }
+        h1 {
+            color: #444;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+        .category-container {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .category-button {
+            background-color: #e0e0e0;
+            padding: 15px 30px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1.4rem;
+            color: #444;
+            margin: 5px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .category-button:hover {
+            background-color: #0275d8;
+            color: #fff;
+            transform: scale(1.1);
+        }
+        .category-button:active {
+            transform: scale(1.05);
+        }
+        .ng-word-area, .score-area {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #444;
+        }
+        .ng-word-display {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #d9534f;
+            display: block;
+            margin-top: 10px;
+            text-transform: uppercase;
+        }
+        .score-counter {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #5cb85c;
+            display: block;
+            margin-top: 10px;
+        }
+        .game-buttons button {
+            padding: 18px 40px;
+            font-size: 1.6rem;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            margin: 15px;
+            transition: transform 0.2s ease-in-out, background-color 0.3s;
+            outline: none;
+        }
+        .game-buttons button:hover {
+            transform: translateY(-4px);
+            opacity: 0.9;
+        }
+        .game-buttons button:active {
+            transform: translateY(2px);
+        }
+        #plusButton {
+            background-color: #28a745;
+            color: white;
+        }
+        #minusButton {
+            background-color: #f0ad4e;
+            color: white;
+        }
+        #updateNgWordButton {
+            background-color: #0275d8;
+            color: white;
+        }
+
+        /* メディアクエリ：スマホやタブレット向け */
+        @media (max-width: 768px) {
+            .game-container {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            .category-button {
+                font-size: 1.2rem;
+                padding: 12px 25px;
+            }
+            .ng-word-display, .score-counter {
+                font-size: 3rem;
+            }
+            .game-buttons button {
+                font-size: 1.4rem;
+                padding: 14px 30px;
+            }
+        }
+
+        /* メディアクエリ：さらに小さな画面（スマートフォン向け） */
+        @media (max-width: 480px) {
+            .game-container {
+                padding: 15px;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+            .category-button {
+                font-size: 1rem;
+                padding: 10px 20px;
+            }
+            .ng-word-display, .score-counter {
+                font-size: 2.5rem;
+            }
+            .game-buttons button {
+                font-size: 1.3rem;
+                padding: 12px 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <h1>NGワードゲーム</h1>
+
+    <!-- カテゴリボタン -->
+    <div class="category-container">
+        <button class="category-button" id="categoryFood">食べ物</button>
+        <button class="category-button" id="categoryAnimals">動物</button>
+        <button class="category-button" id="categoryNature">自然</button>
+        <button class="category-button" id="categoryLife">日常生活</button>
+    </div>
+
+    <div class="ng-word-area">
+        現在のNGワード: <span id="ngWordDisplay" class="ng-word-display">---</span>
+    </div>
+
+    <div class="score-area">
+        ポイント: <span id="scoreCounter" class="score-counter">0</span>
+    </div>
+
+    <div class="game-buttons">
+        <button id="plusButton">+</button>
+        <button id="minusButton">-</button>
+        <button id="updateNgWordButton">NGワードを更新</button>
+    </div>
+</div>
+
+<script>
+    const ngWords = {
+        "食べ物": ["りんご", "バナナ", "みかん", "レモン", "いちご", "メロン", "ぶどう", "もも", "すいか", "さくらんぼ", "パン", "ごはん", "おにぎり", "もち", "うどん", "そば", "ラーメン", "カレー", "パスタ", "サラダ"],
+        "動物": ["ねこ", "いぬ", "ぞう", "きりん", "くま", "うさぎ", "ぱんだ", "とり", "魚", "さる", "ライオン", "トラ", "わに", "かば", "ペンギン", "イルカ", "くじら", "カエル", "ヘビ", "とかげ"],
+        "自然": ["雨", "雪", "風", "雲", "虹", "空", "太陽", "月", "星", "山", "川", "海", "森", "林", "草", "花", "木", "石", "土", "道"],
+        "日常生活": ["学校", "仕事", "電車", "車", "飛行機", "船", "自転車", "歩道", "信号", "道路", "電話", "時計", "鍵", "財布", "手帳", "えんぴつ", "けしゴム", "本", "かばん", "かさ"]
+    };
+
+    let currentNgWord = '';
+    let score = 0;
+    let currentCategory = "食べ物"; // 初期カテゴリー
+
+    const ngWordDisplay = document.getElementById('ngWordDisplay');
+    const scoreCounter = document.getElementById('scoreCounter');
+    const plusButton = document.getElementById('plusButton');
+    const minusButton = document.getElementById('minusButton');
+    const updateNgWordButton = document.getElementById('updateNgWordButton');
+    const categoryButtons = document.querySelectorAll('.category-button');
+
+    // ランダムなNGワードを生成して表示する関数
+    function generateNewNgWord() {
+        const words = ngWords[currentCategory];
+        const randomIndex = Math.floor(Math.random() * words.length);
+        currentNgWord = words[randomIndex];
+        ngWordDisplay.textContent = currentNgWord;
+    }
+
+    // ゲーム開始時の処理
+    generateNewNgWord();
+
+    // ポイント加算ボタン
+    plusButton.addEventListener('click', () => {
+        score++;
+        scoreCounter.textContent = score;
+    });
+
+    // ポイント減算ボタン
+    minusButton.addEventListener('click', () => {
+        score--;
+        scoreCounter.textContent = score;
+    });
+
+    // NGワード更新ボタン
+    updateNgWordButton.addEventListener('click', () => {
+        generateNewNgWord();
+    });
+
+    // カテゴリ変更処理
+    categoryButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            currentCategory = button.id.replace('category', '');
+            generateNewNgWord();
+        });
+    });
+</script>
+
+</body>
+</html>
+
     <style>
         body {
             font-family: 'Arial', sans-serif;
