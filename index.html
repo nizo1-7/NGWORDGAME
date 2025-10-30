@@ -12,28 +12,47 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #f0f0f0;
+            background-color: #f3f3f7;
             text-align: center;
             flex-direction: column;
         }
         .game-container {
             background-color: #fff;
-            padding: 40px 60px;
-            border-radius: 15px;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            padding: 40px 50px;
+            border-radius: 20px;
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
             width: 80%;
-            max-width: 650px;
+            max-width: 700px;
             text-align: center;
         }
         h1 {
-            color: #333;
-            font-size: 2.2rem;
-            margin-bottom: 20px;
+            color: #444;
+            font-size: 2.5rem;
+            margin-bottom: 25px;
             font-weight: 600;
         }
+        .category-container {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+            font-size: 1.6rem;
+            color: #666;
+        }
+        .category-button {
+            background-color: #e0e0e0;
+            padding: 12px 30px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .category-button:hover {
+            background-color: #0275d8;
+            color: #fff;
+            transform: scale(1.05);
+        }
         .ng-word-area, .score-area {
-            font-size: 2.2rem;
-            margin-bottom: 25px;
+            font-size: 2rem;
+            margin-bottom: 20px;
         }
         .ng-word-display {
             font-size: 4rem;
@@ -57,11 +76,12 @@
             border: none;
             border-radius: 8px;
             margin: 15px;
-            transition: transform 0.2s ease-in-out;
+            transition: transform 0.2s ease-in-out, background-color 0.3s;
             outline: none;
         }
         .game-buttons button:hover {
             transform: translateY(-4px);
+            opacity: 0.8;
         }
         .game-buttons button:active {
             transform: translateY(2px);
@@ -69,8 +89,7 @@
         .game-buttons {
             display: flex;
             justify-content: center;
-            gap: 30px;
-            flex-wrap: wrap; /* 横並びにしつつ、画面サイズが小さいときに縦に並べる */
+            gap: 20px;
         }
         #plusButton {
             background-color: #28a745;
@@ -83,11 +102,6 @@
         #updateNgWordButton {
             background-color: #0275d8;
             color: white;
-        }
-
-        /* ボタンの色が鮮やかに見えるようにホバー効果 */
-        .game-buttons button:hover {
-            opacity: 0.8;
         }
 
         /* メディアクエリ：画面サイズが小さいとき */
@@ -113,6 +127,14 @@
 <div class="game-container">
     <h1>NGワードゲーム（小学生向け300個版）</h1>
 
+    <!-- カテゴリボタン -->
+    <div class="category-container">
+        <button class="category-button" id="categoryFood">食べ物</button>
+        <button class="category-button" id="categoryAnimals">動物</button>
+        <button class="category-button" id="categoryNature">自然</button>
+        <button class="category-button" id="categoryLife">日常生活</button>
+    </div>
+
     <div class="ng-word-area">
         現在のNGワード: <span id="ngWordDisplay" class="ng-word-display">---</span>
     </div>
@@ -129,59 +151,29 @@
 </div>
 
 <script>
-    const ngWords = [
-        "りんご", "バナナ", "みかん", "レモン", "いちご", "メロン", "ぶどう", "もも", "すいか", "さくらんぼ",
-        "パン", "ごはん", "おにぎり", "もち", "うどん", "そば", "ラーメン", "カレー", "パスタ", "サラダ",
-        "たまご", "牛乳", "チーズ", "バター", "やさい", "肉", "魚", "えび", "かに", "たこ",
-        "おかし", "ケーキ", "クッキー", "アイス", "チョコ", "あめ", "ガム", "プリン", "ゼリー", "ポテト",
-        "コーヒー", "お茶", "ジュース", "水", "ビール", "ワイン", "サイダー", "コーラ", "炭酸", "甘い",
+    const ngWords = {
+        "食べ物": ["りんご", "バナナ", "みかん", "レモン", "いちご", "メロン", "ぶどう", "もも", "すいか", "さくらんぼ", "パン", "ごはん", "おにぎり", "もち", "うどん", "そば", "ラーメン", "カレー", "パスタ", "サラダ"],
+        "動物": ["ねこ", "いぬ", "ぞう", "きりん", "くま", "うさぎ", "ぱんだ", "とり", "魚", "さる", "ライオン", "トラ", "わに", "かば", "ペンギン", "イルカ", "くじら", "カエル", "ヘビ", "とかげ"],
+        "自然": ["雨", "雪", "風", "雲", "虹", "空", "太陽", "月", "星", "山", "川", "海", "森", "林", "草", "花", "木", "石", "土", "道"],
+        "日常生活": ["学校", "仕事", "電車", "車", "飛行機", "船", "自転車", "歩道", "信号", "道路", "電話", "時計", "鍵", "財布", "手帳", "えんぴつ", "けしゴム", "本", "かばん", "かさ"]
+    };
 
-        // 動物・生き物 (40個)
-        "ねこ", "いぬ", "ぞう", "きりん", "くま", "うさぎ", "ぱんだ", "とり", "魚", "さる",
-        "ライオン", "トラ", "わに", "かば", "ペンギン", "イルカ", "くじら", "カエル", "ヘビ", "とかげ",
-        "牛", "馬", "豚", "ひつじ", "ヤギ", "にわとり", "アヒル", "ハト", "カラス", "スズメ",
-        "ちょう", "はち", "あり", "くも", "かまきり", "とんぼ", "ホタル", "テントウムシ", "バッタ", "セミ",
-        
-        // 自然・景色 (30個)
-        "雨", "雪", "風", "雲", "虹", "空", "太陽", "月", "星", "山",
-        "川", "海", "森", "林", "草", "花", "木", "石", "土", "道",
-        "外", "うち", "道", "橋", "家", "ビル", "公園", "畑", "滝", "池",
-
-        // 日常生活・場所 (80個)
-        "学校", "仕事", "電車", "車", "飛行機", "船", "自転車", "歩道", "信号", "道路",
-        "電話", "時計", "鍵", "財布", "手帳", "えんぴつ", "けしゴム", "本", "かばん", "かさ",
-        "洋服", "くつ", "帽子", "めがね", "手袋", "靴下", "布団", "まくら", "窓", "戸",
-        "朝", "昼", "夜", "今", "明日", "昨日", "時間", "季節", "月", "日",
-        "好き", "嫌い", "愛", "友", "家族", "ともだち", "恋人", "先生", "生徒", "同僚",
-        "顔", "手", "足", "目", "鼻", "口", "耳", "頭", "心", "体",
-        "笑う", "泣く", "怒る", "楽しい", "悲しい", "驚く", "考える", "学ぶ", "働く", "休む",
-        "見る", "聞く", "話す", "書く", "読む", "食べる", "飲む", "寝る", "起きる", "座る",
-        
-        // 感情・状態・その他 (100個)
-        "うれしい", "かなしい", "さびしい", "こわい", "やさしい", "厳しい", "面白い", "つまらない", "温かい", "冷たい",
-        "熱い", "寒い", "高い", "低い", "広い", "狭い", "大きい", "小さい", "長い", "短い",
-        "重い", "軽い", "速い", "遅い", "太い", "細い", "明るい", "暗い", "簡単", "難しい",
-        "強い", "弱い", "多い", "少ない", "良い", "悪い", "古い", "新しい", "遠い", "近い",
-        "前", "後", "右", "左", "上", "下", "中", "外", "向こう", "こちら",
-        "声", "音", "色", "形", "光", "影", "夢", "希望", "笑顔", "涙",
-        "歌", "音楽", "映画", "小説", "漫画", "絵", "写真", "手紙", "日記", "地図",
-        "道具", "機械", "ひも", "はさみ", "のり", "はこ", "かみ", "ふで", "えのぐ", "せっけん",
-        "お金", "銀行", "財布", "貯金", "買い物", "お店", "お客さん", "売る", "買う", "きっぷ"
-    ];
-    
     let currentNgWord = '';
     let score = 0;
+    let currentCategory = "食べ物"; // 初期カテゴリー
 
     const ngWordDisplay = document.getElementById('ngWordDisplay');
     const scoreCounter = document.getElementById('scoreCounter');
     const plusButton = document.getElementById('plusButton');
     const minusButton = document.getElementById('minusButton');
     const updateNgWordButton = document.getElementById('updateNgWordButton');
+    const categoryButtons = document.querySelectorAll('.category-button');
 
     // ランダムなNGワードを生成して表示する関数
     function generateNewNgWord() {
-        const randomIndex = Math.floor(Math.random() * ngWords.length);
-        currentNgWord = ngWords[randomIndex];
+        const words = ngWords[currentCategory];
+        const randomIndex = Math.floor(Math.random() * words.length);
+        currentNgWord = words[randomIndex];
         ngWordDisplay.textContent = currentNgWord;
     }
 
@@ -204,6 +196,15 @@
     updateNgWordButton.addEventListener('click', () => {
         generateNewNgWord();
     });
+
+    // カテゴリ選択ボタン
+    categoryButtons.forEach(button => {
+        button.addEventListener('click', (event) => {
+            currentCategory = event.target.innerText;
+            generateNewNgWord();
+        });
+    });
+
 </script>
 
 </body>
