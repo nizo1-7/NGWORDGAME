@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NGワードゲーム</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            text-align: center;
+            flex-direction: column;
+        }
+        .game-container {
+            background-color: #fff;
+            padding: 50px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            width: 80%;
+            max-width: 600px;
+        }
+        h1 {
+            color: #333;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+        .ng-word-area, .score-area {
+            font-size: 2rem;
+            margin-bottom: 30px;
+        }
+        .ng-word-display {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #d9534f;
+            display: block;
+            margin-top: 10px;
+        }
+        .score-counter {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #5cb85c;
+            display: block;
+            margin-top: 10px;
+        }
+        .game-buttons button {
+            padding: 15px 30px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            margin: 0 10px;
+            transition: background-color 0.3s;
+        }
+        .game-buttons button:hover {
+            opacity: 0.8;
+        }
+        .game-buttons {
+            display: flex; /* Flexboxを使い、ボタンを横並びにする */
+            justify-content: center; /* ボタンを中央に配置 */
+            gap: 20px; /* ボタン間の間隔を設定 */
+        }
+        #plusButton {
+            background-color: #5cb85c;
+        }
+        #minusButton {
+            background-color: #f0ad4e;
+        }
+        #updateNgWordButton {
+            background-color: #0275d8;
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <h1>NGワードゲーム（小学生向け300個版）</h1>
+
+    <div class="ng-word-area">
+        現在のNGワード: <span id="ngWordDisplay" class="ng-word-display"></span>
+    </div>
+
+    <div class="score-area">
+        ポイント: <span id="scoreCounter" class="score-counter">0</span>
+    </div>
+
+    <div class="game-buttons">
+        <button id="plusButton">+</button>
+        <button id="minusButton">-</button>
+        <button id="updateNgWordButton">NGワードを更新</button>
+    </div>
+</div>
+
+<script>
+    const ngWords = [
+        // 食べ物 (50個)
+        "りんご", "バナナ", "みかん", "レモン", "いちご", "メロン", "ぶどう", "もも", "すいか", "さくらんぼ",
+        "パン", "ごはん", "おにぎり", "もち", "うどん", "そば", "ラーメン", "カレー", "パスタ", "サラダ",
+        "たまご", "牛乳", "チーズ", "バター", "やさい", "肉", "魚", "えび", "かに", "たこ",
+        "おかし", "ケーキ", "クッキー", "アイス", "チョコ", "あめ", "ガム", "プリン", "ゼリー", "ポテト",
+        "コーヒー", "お茶", "ジュース", "水", "ビール", "ワイン", "サイダー", "コーラ", "炭酸", "甘い",
+
+        // 動物・生き物 (40個)
+        "ねこ", "いぬ", "ぞう", "きりん", "くま", "うさぎ", "ぱんだ", "とり", "魚", "さる",
+        "ライオン", "トラ", "わに", "かば", "ペンギン", "イルカ", "くじら", "カエル", "ヘビ", "とかげ",
+        "牛", "馬", "豚", "ひつじ", "ヤギ", "にわとり", "アヒル", "ハト", "カラス", "スズメ",
+        "ちょう", "はち", "あり", "くも", "かまきり", "とんぼ", "ホタル", "テントウムシ", "バッタ", "セミ",
+        
+        // 自然・景色 (30個)
+        "雨", "雪", "風", "雲", "虹", "空", "太陽", "月", "星", "山",
+        "川", "海", "森", "林", "草", "花", "木", "石", "土", "道",
+        "外", "うち", "道", "橋", "家", "ビル", "公園", "畑", "滝", "池",
+
+        // 日常生活・場所 (80個)
+        "学校", "仕事", "電車", "車", "飛行機", "船", "自転車", "歩道", "信号", "道路",
+        "電話", "時計", "鍵", "財布", "手帳", "えんぴつ", "けしゴム", "本", "かばん", "かさ",
+        "洋服", "くつ", "帽子", "めがね", "手袋", "靴下", "布団", "まくら", "窓", "戸",
+        "朝", "昼", "夜", "今", "明日", "昨日", "時間", "季節", "月", "日",
+        "好き", "嫌い", "愛", "友", "家族", "ともだち", "恋人", "先生", "生徒", "同僚",
+        "顔", "手", "足", "目", "鼻", "口", "耳", "頭", "心", "体",
+        "笑う", "泣く", "怒る", "楽しい", "悲しい", "驚く", "考える", "学ぶ", "働く", "休む",
+        "見る", "聞く", "話す", "書く", "読む", "食べる", "飲む", "寝る", "起きる", "座る",
+        
+        // 感情・状態・その他 (100個)
+        "うれしい", "かなしい", "さびしい", "こわい", "やさしい", "厳しい", "面白い", "つまらない", "温かい", "冷たい",
+        "熱い", "寒い", "高い", "低い", "広い", "狭い", "大きい", "小さい", "長い", "短い",
+        "重い", "軽い", "速い", "遅い", "太い", "細い", "明るい", "暗い", "簡単", "難しい",
+        "強い", "弱い", "多い", "少ない", "良い", "悪い", "古い", "新しい", "遠い", "近い",
+        "前", "後", "右", "左", "上", "下", "中", "外", "向こう", "こちら",
+        "声", "音", "色", "形", "光", "影", "夢", "希望", "笑顔", "涙",
+        "歌", "音楽", "映画", "小説", "漫画", "絵", "写真", "手紙", "日記", "地図",
+        "道具", "機械", "ひも", "はさみ", "のり", "はこ", "かみ", "ふで", "えのぐ", "せっけん",
+        "お金", "銀行", "財布", "貯金", "買い物", "お店", "お客さん", "売る", "買う", "きっぷ"
+    ];
+    
+    let currentNgWord = '';
+    let score = 0;
+
+    const ngWordDisplay = document.getElementById('ngWordDisplay');
+    const scoreCounter = document.getElementById('scoreCounter');
+    const plusButton = document.getElementById('plusButton');
+    const minusButton = document.getElementById('minusButton');
+    const updateNgWordButton = document.getElementById('updateNgWordButton');
+
+    // ランダムなNGワードを生成して表示する関数
+    function generateNewNgWord() {
+        const randomIndex = Math.floor(Math.random() * ngWords.length);
+        currentNgWord = ngWords[randomIndex];
+        ngWordDisplay.textContent = currentNgWord;
+    }
+
+    // ゲーム開始時の処理
+    generateNewNgWord();
+
+    // ポイント加算ボタン
+    plusButton.addEventListener('click', () => {
+        score++;
+        scoreCounter.textContent = score;
+    });
+
+    // ポイント減算ボタン
+    minusButton.addEventListener('click', () => {
+        score--;
+        scoreCounter.textContent = score;
+    });
+
+    // NGワード更新ボタン
+    updateNgWordButton.addEventListener('click', () => {
+        generateNewNgWord();
+    });
+</script>
+
+</body>
+</html>
