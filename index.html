@@ -18,20 +18,22 @@
         }
         .game-container {
             background-color: #fff;
-            padding: 50px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            padding: 40px 60px;
+            border-radius: 15px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
             width: 80%;
-            max-width: 600px;
+            max-width: 650px;
+            text-align: center;
         }
         h1 {
             color: #333;
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             margin-bottom: 20px;
+            font-weight: 600;
         }
         .ng-word-area, .score-area {
-            font-size: 2rem;
-            margin-bottom: 30px;
+            font-size: 2.2rem;
+            margin-bottom: 25px;
         }
         .ng-word-display {
             font-size: 4rem;
@@ -39,6 +41,7 @@
             color: #d9534f;
             display: block;
             margin-top: 10px;
+            text-transform: uppercase;
         }
         .score-counter {
             font-size: 4rem;
@@ -48,31 +51,60 @@
             margin-top: 10px;
         }
         .game-buttons button {
-            padding: 15px 30px;
-            font-size: 1.5rem;
+            padding: 18px 40px;
+            font-size: 1.6rem;
             cursor: pointer;
             border: none;
-            border-radius: 5px;
-            color: #fff;
-            margin: 0 10px;
-            transition: background-color 0.3s;
+            border-radius: 8px;
+            margin: 15px;
+            transition: transform 0.2s ease-in-out;
+            outline: none;
         }
         .game-buttons button:hover {
-            opacity: 0.8;
+            transform: translateY(-4px);
+        }
+        .game-buttons button:active {
+            transform: translateY(2px);
         }
         .game-buttons {
-            display: flex; /* Flexboxを使い、ボタンを横並びにする */
-            justify-content: center; /* ボタンを中央に配置 */
-            gap: 20px; /* ボタン間の間隔を設定 */
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap; /* 横並びにしつつ、画面サイズが小さいときに縦に並べる */
         }
         #plusButton {
-            background-color: #5cb85c;
+            background-color: #28a745;
+            color: white;
         }
         #minusButton {
             background-color: #f0ad4e;
+            color: white;
         }
         #updateNgWordButton {
             background-color: #0275d8;
+            color: white;
+        }
+
+        /* ボタンの色が鮮やかに見えるようにホバー効果 */
+        .game-buttons button:hover {
+            opacity: 0.8;
+        }
+
+        /* メディアクエリ：画面サイズが小さいとき */
+        @media (max-width: 768px) {
+            .game-container {
+                padding: 30px 20px;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            .ng-word-display, .score-counter {
+                font-size: 3rem;
+            }
+            .game-buttons button {
+                padding: 15px 30px;
+                font-size: 1.4rem;
+            }
         }
     </style>
 </head>
@@ -82,7 +114,7 @@
     <h1>NGワードゲーム（小学生向け300個版）</h1>
 
     <div class="ng-word-area">
-        現在のNGワード: <span id="ngWordDisplay" class="ng-word-display"></span>
+        現在のNGワード: <span id="ngWordDisplay" class="ng-word-display">---</span>
     </div>
 
     <div class="score-area">
@@ -98,7 +130,6 @@
 
 <script>
     const ngWords = [
-        // 食べ物 (50個)
         "りんご", "バナナ", "みかん", "レモン", "いちご", "メロン", "ぶどう", "もも", "すいか", "さくらんぼ",
         "パン", "ごはん", "おにぎり", "もち", "うどん", "そば", "ラーメン", "カレー", "パスタ", "サラダ",
         "たまご", "牛乳", "チーズ", "バター", "やさい", "肉", "魚", "えび", "かに", "たこ",
