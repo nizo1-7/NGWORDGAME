@@ -13,7 +13,7 @@
       align-items: center;
       height: 100vh;
       margin: 0;
-      background: linear-gradient(135deg, #fceabb, #f8b500);
+      background: linear-gradient(135deg, #e0e0dc, #c2c2b0); /* 落ち着いた背景色 */
       text-align: center;
       flex-direction: column;
     }
@@ -23,7 +23,7 @@
       padding: 40px 60px;
       border-radius: 20px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-      border: 4px solid #ffcc70;
+      border: 4px solid #b0a890;
       width: 85%;
       max-width: 700px;
       animation: popIn 0.6s ease-out;
@@ -49,7 +49,7 @@
     .ng-word-display {
       font-size: 4rem;
       font-weight: bold;
-      color: #ff4d4d;
+      color: #d9534f;
       margin-top: 10px;
       text-transform: uppercase;
     }
@@ -57,7 +57,7 @@
     .score-counter {
       font-size: 4rem;
       font-weight: bold;
-      color: #00c853;
+      color: #5cb85c;
       margin-top: 10px;
     }
 
@@ -81,7 +81,7 @@
     }
 
     #plusButton {
-      background-color: #28a745;
+      background-color: #5cb85c;
       color: white;
     }
 
@@ -109,7 +109,7 @@
       padding: 10px;
       font-size: 1.2rem;
       border-radius: 8px;
-      border: 2px solid #ffcc70;
+      border: 2px solid #b0a890;
     }
 
     @media (max-width: 768px) {
@@ -161,11 +161,26 @@
 
   <script>
     const ngWords = {
-      food: ["りんご", "バナナ", "みかん", "レモン", "いちご", "メロン", "ぶどう", "もち", "ラーメン", "カレー"],
-      animal: ["ねこ", "いぬ", "ぞう", "きりん", "くま", "うさぎ", "ぱんだ", "とり", "ライオン", "トラ"],
-      nature: ["雨", "雪", "風", "雲", "虹", "空", "太陽", "月", "星", "山"],
-      daily: ["学校", "仕事", "電車", "車", "飛行機", "電話", "時計", "財布", "本", "かばん"],
-      emotion: ["うれしい", "かなしい", "こわい", "やさしい", "面白い", "つまらない", "熱い", "寒い", "強い", "弱い"]
+      food: [
+        "りんご", "バナナ", "みかん", "レモン", "いちご", "メロン", "ぶどう", "もち", "ラーメン", "カレー",
+        "すし", "てんぷら", "うどん", "そば", "ハンバーガー", "ピザ", "チョコレート", "アイス", "パン", "おにぎり"
+      ],
+      animal: [
+        "ねこ", "いぬ", "ぞう", "きりん", "くま", "うさぎ", "ぱんだ", "とり", "ライオン", "トラ",
+        "さる", "ペンギン", "イルカ", "かめ", "へび", "カンガルー", "コアラ", "ひつじ", "ぶた", "うし"
+      ],
+      nature: [
+        "雨", "雪", "風", "雲", "虹", "空", "太陽", "月", "星", "山",
+        "川", "海", "森", "花", "草", "火山", "湖", "滝", "砂漠", "岩"
+      ],
+      daily: [
+        "学校", "仕事", "電車", "車", "飛行機", "電話", "時計", "財布", "本", "かばん",
+        "テレビ", "冷蔵庫", "ベッド", "机", "椅子", "靴", "服", "歯ブラシ", "鍵", "カーテン"
+      ],
+      emotion: [
+        "うれしい", "かなしい", "こわい", "やさしい", "面白い", "つまらない", "熱い", "寒い", "強い", "弱い",
+        "楽しい", "怒ってる", "びっくり", "安心", "緊張", "興奮", "疲れた", "幸せ", "不安", "満足"
+      ]
     };
 
     let currentNgWord = '';
