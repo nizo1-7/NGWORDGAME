@@ -13,7 +13,7 @@
       align-items: center;
       height: 100vh;
       margin: 0;
-      background: linear-gradient(135deg, #e0e0dc, #c2c2b0); /* 落ち着いた背景色 */
+      background: linear-gradient(135deg, #e0e0dc, #c2c2b0);
       text-align: center;
       flex-direction: column;
     }
@@ -136,6 +136,7 @@
     <div class="genre-select">
       ジャンルを選ぶ：
       <select id="genreSelector">
+        <option value="all">すべて</option>
         <option value="food">食べ物</option>
         <option value="animal">動物</option>
         <option value="nature">自然</option>
@@ -183,6 +184,15 @@
       ]
     };
 
+    // すべてジャンルを統合
+    ngWords.all = [
+      ...ngWords.food,
+      ...ngWords.animal,
+      ...ngWords.nature,
+      ...ngWords.daily,
+      ...ngWords.emotion
+    ];
+
     let currentNgWord = '';
     let score = 0;
 
@@ -217,9 +227,4 @@
       generateNewNgWord();
     });
 
-    genreSelector.addEventListener('change', () => {
-      generateNewNgWord();
-    });
-  </script>
-</body>
-</html>
+    genreSelector.addEventListener('change', ()
