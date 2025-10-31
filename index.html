@@ -71,7 +71,7 @@
 
     .game-buttons button {
       padding: 18px 40px;
-      font-size: 2rem;
+      font-size: 1.6rem;
       cursor: pointer;
       border: none;
       border-radius: 12px;
@@ -184,7 +184,7 @@
       ]
     };
 
-    // すべてジャンルを統合
+    // 「すべて」ジャンルを統合
     ngWords.all = [
       ...ngWords.food,
       ...ngWords.animal,
@@ -206,6 +206,10 @@
     function generateNewNgWord() {
       const genre = genreSelector.value;
       const words = ngWords[genre];
+      if (!words || words.length === 0) {
+        ngWordDisplay.textContent = "---";
+        return;
+      }
       const randomIndex = Math.floor(Math.random() * words.length);
       currentNgWord = words[randomIndex];
       ngWordDisplay.textContent = currentNgWord;
@@ -227,4 +231,9 @@
       generateNewNgWord();
     });
 
-    genreSelector.addEventListener('change', ()
+    genreSelector.addEventListener('change', () => {
+      generateNewNgWord();
+    });
+  </script>
+</body>
+</html>
